@@ -35,8 +35,8 @@ immediately persist written data and retrieved images are constantly
 overwritten by newer versions. This usually means that retrieved
 images are not persisted at all and only kept in the filesystem cache.
 
-The captured images are visible in the device detail page in the device
-live view. The captured screen output isn't stored by info-beamer hosted.
+The captured images are visible on the device detail page in the
+live view. This captured screen output isn't stored by info-beamer hosted.
 
 ## Automation
 
