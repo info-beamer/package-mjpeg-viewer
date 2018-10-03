@@ -28,12 +28,13 @@ will automatically try to reconnect to cameras after a few seconds.
 
 ## Privacy
 
-An info-beamer device will not permanently store the retrieved images,
-although retrieved images are temporarily stored in the filesystem.
-The info-beamer operating system is configured so it doesn't
-immediately persist written data and retrieved images are constantly
-overwritten by newer versions. This usually means that retrieved
-images are not persisted at all and only kept in the filesystem cache.
+An info-beamer device usually doesn't store the retrieved images, although
+retrieved images are temporarily stored in the filesystem. The info-beamer
+operating system is configured so it doesn't immediately persist written
+data and images are constantly overwritten by newer versions. This usually
+means that images are not persisted at all and only kept in the filesystem
+cache. In a future update, a RAM disk might be used to completely avoid
+storing the images at all.
 
 The captured images are visible on the device detail page in the
 live view. This captured screen output isn't stored by info-beamer hosted.
