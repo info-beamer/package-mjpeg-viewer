@@ -47,7 +47,9 @@ def capture(cam, target):
             ('basic auth',  HTTPBasicAuth(cam['user'], cam['pass'])),
         ]
     else:
-        auths = [None]
+        auths = [
+            ('no auth', None)
+        ]
 
     log("contacting camera %r %r" % (cam, target))
     for method, auth in auths:
