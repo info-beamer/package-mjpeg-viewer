@@ -26,6 +26,18 @@ shown is up-to-date. If the streaming process couldn't update the image
 for a few seconds, the text instead reads **Last updated ..s ago**. info-beamer
 will automatically try to reconnect to cameras after a few seconds.
 
+## Privacy
+
+An info-beamer device will not permanently store the retrieved images,
+although retrieved images are temporarily stored in the filesystem.
+The info-beamer operating system is configured so it doesn't
+immediately persist written data and retrieved images are constantly
+overwritten by newer versions. This usually means that retrieved
+images are not persisted at all and only kept in the filesystem cache.
+
+The captured images are visible in the device detail page in the device
+live view. The captured screen output isn't stored by info-beamer hosted.
+
 ## Automation
 
 info-beamer hosted has a [powerful API](https://info-beamer.com/doc/api). It
