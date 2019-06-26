@@ -31,7 +31,7 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-VERSION = "1.2"
+VERSION = "1.3"
 
 import os
 import sys
@@ -147,7 +147,7 @@ class Configuration(object):
 
     def parse_node_json(self, do_update=True):
         with open("node.json") as f:
-            self._options = json.load(f)['options']
+            self._options = json.load(f).get('options', [])
         if do_update:
             self.update_config()
 
@@ -198,6 +198,7 @@ class Configuration(object):
 def setup_inotify(configuration):
     class EventHandler(pyinotify.ProcessEvent):
         def process_default(self, event):
+            print >>sys.stderr, event
             basename = os.path.basename(event.pathname)
             if basename == 'node.json':
                 log("node.json changed")
@@ -250,7 +251,7 @@ class Node(object):
             os.rename(f.name, filename)
 
     def write_json(self, filename, data):
-        self.write_file(json.dumps(
+        self.write_file(filename, json.dumps(
             data,
             ensure_ascii=False,
             separators=(',',':'),
@@ -316,12 +317,17 @@ class APIProxy(object):
 
     def unwrap(self, r):
         r.raise_for_status()
-        resp = r.json()
-        if not resp['ok']:
-            raise APIError(u"api call failed: %s" % (
-                resp.get('error', '<unknown error>'),
-            ))
-        return resp.get(self._api_name)
+        if r.status_code == 304:
+            return None
+        if r.headers['content-type'] == 'application/json':
+            resp = r.json()
+            if not resp['ok']:
+                raise APIError(u"api call failed: %s" % (
+                    resp.get('error', '<unknown error>'),
+                ))
+            return resp.get(self._api_name)
+        else:
+            return r.content
 
     def add_defaults(self, kwargs):
         if not 'timeout' in kwargs:
@@ -343,7 +349,7 @@ class APIProxy(object):
         self.add_defaults(kwargs)
         try:
             return self.unwrap(self._apis.session.post(
-                url = self.url(),
+                url = self.url,
                 **kwargs
             ))
         except APIError:
@@ -516,7 +522,10 @@ class Device(object):
             self.turn_screen_off()
 
     def reboot(self):
-        self.send_raw("reboot")
+        self.send_raw("system reboot")
+
+    def halt_until_powercycled(self):
+        self.send_raw("system halt")
 
     def restart_infobeamer(self):
         self.send_raw("infobeamer restart")
