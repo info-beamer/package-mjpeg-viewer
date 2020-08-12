@@ -37,5 +37,18 @@
             "type": "string",
             "default": ""
         }]
+    }, {
+        "title": "Layout",
+        "ui_width": 4,
+        "name": "layout",
+        "type": "select",
+        "options": [
+            ["auto", "Automatic (default)"],
+            [[2, 1], "2x1"],
+            [[1, 2], "1x2"],
+            [[3, 2], "3x2"],
+            [[4, 3], "4x3"]
+        ],
+        "default": "auto"
     }]
 }

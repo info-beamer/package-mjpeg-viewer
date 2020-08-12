@@ -2,6 +2,8 @@ gl.setup(NATIVE_WIDTH, NATIVE_HEIGHT)
 
 util.no_globals()
 
+local layout = "auto"
+
 local font = resource.load_font "OpenSans-Bold.ttf"
 local black = resource.create_colored_texture(0, 0, 0, 1)
 
@@ -64,27 +66,38 @@ util.json_watch("config.json", function(config)
     end
     print(string.format("updated config. %d cams", #cams))
 
+    layout = config.layout
+
     node.gc()
 end)
 
 function node.render()
     gl.clear(0, 0, 0, 1)
-    local split
-    if #cams > 9 then
-        split = 4
-    elseif #cams > 4 then
-        split = 3
-    elseif #cams > 1 then
-        split = 2
+    local split_x, split_y
+    if layout == "auto" then
+        if #cams > 9 then
+            split_x = 4
+            split_y = 4
+        elseif #cams > 4 then
+            split_x = 3
+            split_y = 3
+        elseif #cams > 1 then
+            split_x = 2
+            split_y = 2
+        else
+            split_x = 1
+            split_y = 1
+        end
     else
-        split = 1
+        split_x = layout[1]
+        split_y = layout[2]
     end
 
-    local w = math.floor(WIDTH / split)
-    local h = math.floor(HEIGHT / split)
+    local w = math.floor(WIDTH / split_x)
+    local h = math.floor(HEIGHT / split_y)
     for idx = 1, #cams do
-        local x = (idx-1) % split
-        local y = math.floor((idx-1) / split)
+        local x = (idx-1) % split_x
+        local y = math.floor((idx-1) / split_x)
 
         local cam = cams[idx].get()
 
