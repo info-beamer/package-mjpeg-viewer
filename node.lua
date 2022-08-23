@@ -7,15 +7,21 @@ local layout = "auto"
 local font = resource.load_font "OpenSans-Bold.ttf"
 local black = resource.create_colored_texture(0, 0, 0, 1)
 
+local next_image_load = sys.now()
+local image_per_second = 2
+
 local function Cam(config)
     local img = resource.create_colored_texture(0, 0, 0, 0)
     local next_img
     local last_update = sys.now()
 
     local function update(file)
-        if not next_img then
+        if sys.now() < next_image_load then
+            print("discarding due to image rate")
+        elseif not next_img then
             print 'loading next frame for cam'
             next_img = resource.load_image(file)
+            next_image_load = sys.now() + 1 / image_per_second
         else
             print 'discarding frame'
         end
@@ -67,6 +73,7 @@ util.json_watch("config.json", function(config)
     print(string.format("updated config. %d cams", #cams))
 
     layout = config.layout
+    image_per_second = config.image_per_second
 
     node.gc()
 end)
