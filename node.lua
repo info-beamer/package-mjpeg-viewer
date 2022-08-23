@@ -21,7 +21,11 @@ local function Cam(config)
         elseif not next_img then
             print 'loading next frame for cam'
             next_img = resource.load_image(file)
-            next_image_load = sys.now() + 1 / image_per_second
+            if image_per_second == "unlimited" then
+                next_image_load = sys.now()
+            else
+                next_image_load = sys.now() + 1 / image_per_second
+            end
         else
             print 'discarding frame'
         end
